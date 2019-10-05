@@ -296,7 +296,7 @@ def minimum_st_node_cut(G, s, t, flow_func=None, auxiliary=None, residual=None):
     return node_cut - set([s, t])
 
 
-def minimum_node_cut(G, s=None, t=None, flow_func=None):
+def minimum_node_cut(G, s=None, t=None, flow_func=None, approximate=-1):
     r"""Returns a set of nodes of minimum cardinality that disconnects G.
 
     If source and target nodes are provided, this function returns the
@@ -430,6 +430,8 @@ def minimum_node_cut(G, s=None, t=None, flow_func=None):
         this_cut = minimum_st_node_cut(G, v, w, **kwargs)
         if len(min_cut) >= len(this_cut):
             min_cut = this_cut
+        if len(min_cut) <= approximate:
+            return min_cut
     # Also for non adjacent pairs of neighbors of v.
     for x, y in iter_func(neighbors(v), 2):
         if y in G[x]:
@@ -437,6 +439,8 @@ def minimum_node_cut(G, s=None, t=None, flow_func=None):
         this_cut = minimum_st_node_cut(G, x, y, **kwargs)
         if len(min_cut) >= len(this_cut):
             min_cut = this_cut
+        if len(min_cut) <= approximate:
+            return min_cut
 
     return min_cut
 
